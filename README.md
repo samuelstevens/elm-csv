@@ -2,6 +2,12 @@
 
 Parse CSV files according to [RFC 4180](https://tools.ietf.org/html/rfc4180) (including values with quoted commas).
 
+## Install
+
+```bash
+elm install samuelstevens/elm-csv
+```
+
 ## Quick Start
 
 Suppose you have a file `star-wars-quotes.csv` with the following content:
@@ -12,10 +18,16 @@ quote,character
 "General Kenobi.",General Grievous
 ```
 
-As an Elm string literal, this would be represented as:
+Once this is read into an Elm string, you could parse it like this:
 ```elm
-content = 
-  "quote,character\n\"Why, hello there\",Obi-Wan Kenobi\n\"General Kenobi.\",General Grievous"
+import Csv
+
+let
+  content = 
+    "quote,character\n\"Why, hello there\",Obi-Wan Kenobi\n\"General Kenobi.\",General Grievous"
+in
+Csv.parseRows content --> Ok [[ "quote", "character"],["Why, hello there", "Obi-Wan Kenobi"],["General Kenobi.", "General Grievous"]]
 ```
 
-Calling `Csv.parseCsv` will produce a record with `{ headers: String, rows: String }` where `headers` is `[ "quote", "character" ]` and `rows` is a list of list of strings, properly escaped from their CSV representation.
+Calling `Csv.parseCsv` will produce a list of lists of strings, properly escaped from their CSV representation.
+
