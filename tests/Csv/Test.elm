@@ -148,12 +148,12 @@ suite =
                             |> Expect.equal "\"\"\"General Kenobi\"\"\","
                 , test "value with a quote mark and comma" <|
                     \_ ->
-                        Csv.escapeRows [ [ "\"General Kenobi\", said Grevious", "" ] ]
-                            |> Expect.equal "\"\"\"General Kenobi\"\", said Grevious\","
+                        Csv.escapeRows [ [ "\"General Kenobi\", said Grievous", "" ] ]
+                            |> Expect.equal "\"\"\"General Kenobi\"\", said Grievous\","
                 , test "values with a quote mark and comma" <|
                     \_ ->
-                        Csv.escapeRows [ [ "\"Hello there\".", "\"General Kenobi\", said Grevious" ] ]
-                            |> Expect.equal "\"\"\"Hello there\"\".\",\"\"\"General Kenobi\"\", said Grevious\""
+                        Csv.escapeRows [ [ "\"Hello there\".", "\"General Kenobi\", said Grievous" ] ]
+                            |> Expect.equal "\"\"\"Hello there\"\".\",\"\"\"General Kenobi\"\", said Grievous\""
                 ]
             ]
         ]

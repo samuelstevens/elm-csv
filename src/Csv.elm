@@ -1,4 +1,4 @@
-module Csv exposing (Csv, escapeCsv, escapeRows, parseCsv, parseRows)
+module Csv exposing (escapeCsv, escapeRows, parseCsv, parseRows)
 
 import Helper exposing (State(..), escape, flipRows, nextState)
 
