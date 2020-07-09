@@ -93,36 +93,6 @@ suite =
                         Csv.parseRows "simplification,word usage,removes the clause about keeping the system in a pure state,0803.2581-v1-3-5,0803.2581-v2-3-4,\"The world.\",\"When \"\"we\"\" look, this causes pain.\""
                             |> Expect.equal (Ok [ [ "simplification", "word usage", "removes the clause about keeping the system in a pure state", "0803.2581-v1-3-5", "0803.2581-v2-3-4", "The world.", "When \"we\" look, this causes pain." ] ])
                 ]
-            , describe "Csv.parseCsv"
-                [ test "empty" <|
-                    \_ ->
-                        Csv.parseCsv "" |> Expect.equal (Err "no rows found in .csv file")
-                , test "one char" <|
-                    \_ ->
-                        Csv.parseCsv "a" |> Expect.equal (Ok { headers = [ "a" ], rows = [] })
-                , test "two char" <|
-                    \_ ->
-                        Csv.parseCsv "ab" |> Expect.equal (Ok { headers = [ "ab" ], rows = [] })
-                , test "two values" <|
-                    \_ ->
-                        Csv.parseCsv "a,b" |> Expect.equal (Ok { headers = [ "a", "b" ], rows = [] })
-                , test "many values" <|
-                    \_ ->
-                        Csv.parseCsv "a,b,c,d,\"\"\"quoted\"\",\""
-                            |> Expect.equal (Ok { headers = [ "a", "b", "c", "d", "\"quoted\"," ], rows = [] })
-                , test "newlines" <|
-                    \_ ->
-                        Csv.parseCsv "start\nend"
-                            |> Expect.equal (Ok { headers = [ "start" ], rows = [ [ "end" ] ] })
-                , test "escaped with newlines" <|
-                    \_ ->
-                        Csv.parseCsv "\"start\"\nend"
-                            |> Expect.equal (Ok { headers = [ "start" ], rows = [ [ "end" ] ] })
-                , test "escaped with newlines on both" <|
-                    \_ ->
-                        Csv.parseCsv "\"start\"\n\"end\""
-                            |> Expect.equal (Ok { headers = [ "start" ], rows = [ [ "end" ] ] })
-                ]
             ]
         , describe "Escaping strings to make csv files"
             [ describe "Csv.escapeRows"

@@ -1,19 +1,32 @@
-module Csv exposing (escapeCsv, escapeRows, parseCsv, parseRows)
+module Csv exposing
+    ( parseRows
+    , escapeRows
+    )
 
+{-| Parse CSV files according to RFC 4180.
+
+
+# Parsing
+
+@docs parseRows
+
+
+# Generating
+
+@docs escapeRows
+
+-}
+
+import Dict exposing (Dict)
 import Helper exposing (State(..), escape, flipRows, nextState)
 
 
-type alias Csv =
-    { headers : List String
-    , rows : List (List String)
-    }
+{-| Escape a list of CSV rows and produce a single string (that can be written to a file)
 
+    escapeRows [ [ "start" ], [ "\"end\"" ] ]
+    --> "start\n\"\"\"end\"\"\""
 
-escapeCsv : Csv -> String
-escapeCsv { headers, rows } =
-    escapeRows (headers :: rows)
-
-
+-}
 escapeRows : List (List String) -> String
 escapeRows rows =
     String.join
@@ -24,19 +37,12 @@ escapeRows rows =
         )
 
 
-parseCsv : String -> Result String Csv
-parseCsv str =
-    case parseRows str of
-        Err err ->
-            Err err
+{-| Parse a string reprenting the contents of a CSV file. If the string is invalid CSV, returns Err with the CSV that was already parsed when the error was encountered.
 
-        Ok (headers :: rows) ->
-            Ok { headers = headers, rows = rows }
+    parseRows "hello,world\n- a programmer"
+    --> Ok [ [ "hello", "world" ], ["- a programmer"] ]
 
-        Ok [] ->
-            Err "no rows found in .csv file"
-
-
+-}
 parseRows : String -> Result String (List (List String))
 parseRows str =
     case nextState Initial str "" [] [] of
