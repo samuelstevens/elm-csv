@@ -32,14 +32,22 @@ nextState state remaining field row finished =
 
         Field ->
             case String.uncons remaining of
-                Just ( ',', rest ) ->
-                    nextState Field rest "" ("" :: row) finished
-
-                Just ( '"', rest ) ->
-                    nextState Escaped rest "" row finished
-
                 Just ( ch, rest ) ->
-                    nextState NonEscaped rest (String.fromChar ch) row finished
+                    case ch of
+                        ',' ->
+                            nextState Field rest "" ("" :: row) finished
+
+                        '"' ->
+                            nextState Escaped rest "" row finished
+
+                        '\n' ->
+                            nextState Field rest "" [] finished
+
+                        '\u{000D}' ->
+                            nextState Field rest "" [] finished
+
+                        _ ->
+                            nextState NonEscaped rest (String.fromChar ch) row finished
 
                 Nothing ->
                     Ok finished

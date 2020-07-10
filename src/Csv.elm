@@ -17,7 +17,6 @@ module Csv exposing
 
 -}
 
-import Dict exposing (Dict)
 import Helper exposing (State(..), escape, flipRows, nextState)
 
 

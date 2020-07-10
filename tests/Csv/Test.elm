@@ -92,6 +92,22 @@ suite =
                     \_ ->
                         Csv.parseRows "simplification,word usage,removes the clause about keeping the system in a pure state,0803.2581-v1-3-5,0803.2581-v2-3-4,\"The world.\",\"When \"\"we\"\" look, this causes pain.\""
                             |> Expect.equal (Ok [ [ "simplification", "word usage", "removes the clause about keeping the system in a pure state", "0803.2581-v1-3-5", "0803.2581-v2-3-4", "The world.", "When \"we\" look, this causes pain." ] ])
+                , test "Parsing with carriage returns" <|
+                    \_ ->
+                        Csv.parseRows ",The number of iterations required in ADMM typically drops dramatically during the first couple of iterations of the primal dual method.,\"In particular, it dramatically decreases the amount of ADMM iterations necessary in the first couple of iterations of the primal-dual method.\"\u{000D}\nother,fact update because they now propose two methods,We have proposed an efficient distributed primal-dual interior-point method for loosely coupled problems using ADMM (Algorithm [REF]).,We have proposed two efficient distributed primal-dual interior-point method for loosely coupled problems using ADMM (Algorithm [REF] and Algorithm [REF]).\n\n"
+                            |> Expect.equal
+                                (Ok
+                                    [ [ ""
+                                      , "The number of iterations required in ADMM typically drops dramatically during the first couple of iterations of the primal dual method."
+                                      , "In particular, it dramatically decreases the amount of ADMM iterations necessary in the first couple of iterations of the primal-dual method."
+                                      ]
+                                    , [ "other"
+                                      , "fact update because they now propose two methods"
+                                      , "We have proposed an efficient distributed primal-dual interior-point method for loosely coupled problems using ADMM (Algorithm [REF])."
+                                      , "We have proposed two efficient distributed primal-dual interior-point method for loosely coupled problems using ADMM (Algorithm [REF] and Algorithm [REF])."
+                                      ]
+                                    ]
+                                )
                 ]
             ]
         , describe "Escaping strings to make csv files"
