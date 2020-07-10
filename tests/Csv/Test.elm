@@ -2,7 +2,7 @@ module Csv.Test exposing (suite)
 
 import Csv
 import Expect
-import Test exposing (Test, describe, test)
+import Test exposing (Test, describe, only, test)
 
 
 suite : Test
@@ -94,7 +94,7 @@ suite =
                             |> Expect.equal (Ok [ [ "simplification", "word usage", "removes the clause about keeping the system in a pure state", "0803.2581-v1-3-5", "0803.2581-v2-3-4", "The world.", "When \"we\" look, this causes pain." ] ])
                 , test "Parsing with carriage returns" <|
                     \_ ->
-                        Csv.parseRows ",The number of iterations required in ADMM typically drops dramatically during the first couple of iterations of the primal dual method.,\"In particular, it dramatically decreases the amount of ADMM iterations necessary in the first couple of iterations of the primal-dual method.\"\u{000D}\nother,fact update because they now propose two methods,We have proposed an efficient distributed primal-dual interior-point method for loosely coupled problems using ADMM (Algorithm [REF]).,We have proposed two efficient distributed primal-dual interior-point method for loosely coupled problems using ADMM (Algorithm [REF] and Algorithm [REF]).\n\n"
+                        Csv.parseRows ",The number of iterations required in ADMM typically drops dramatically during the first couple of iterations of the primal dual method.,\"In particular, it dramatically decreases the amount of ADMM iterations necessary in the first couple of iterations of the primal-dual method.\"\u{000D}\nother,fact update because they now propose two methods,We have proposed an efficient distributed primal-dual interior-point method for loosely coupled problems using ADMM (Algorithm [REF]).,We have proposed two efficient distributed primal-dual interior-point method for loosely coupled problems using ADMM (Algorithm [REF] and Algorithm [REF]).\u{000D}\n"
                             |> Expect.equal
                                 (Ok
                                     [ [ ""
@@ -105,6 +105,37 @@ suite =
                                       , "fact update because they now propose two methods"
                                       , "We have proposed an efficient distributed primal-dual interior-point method for loosely coupled problems using ADMM (Algorithm [REF])."
                                       , "We have proposed two efficient distributed primal-dual interior-point method for loosely coupled problems using ADMM (Algorithm [REF] and Algorithm [REF])."
+                                      ]
+                                    ]
+                                )
+                , test "parsing with carriage returns (real world bug)" <|
+                    \_ ->
+                        Csv.parseRows ",1406.2192-v1-11-2,,We illustrate the method on a numerical example in Section [REF].,\u{000D}\n,1406.2192-v1-15-11,,The latter are briefly reviewed in the next section.,\u{000D}\n,1406.2192-v1-17-3,,Next we briefly review how this is done within a primal-dual framework.,\u{000D}\n,1406.2192-v1-19-0,,First notice that for any [MATH] and [MATH] that satisfy [EQUATION] we have [MATH] and [MATH] for all [MATH].,\u{000D}\n"
+                            |> Expect.equal
+                                (Ok
+                                    [ [ ""
+                                      , "1406.2192-v1-11-2"
+                                      , ""
+                                      , "We illustrate the method on a numerical example in Section [REF]."
+                                      , ""
+                                      ]
+                                    , [ ""
+                                      , "1406.2192-v1-15-11"
+                                      , ""
+                                      , "The latter are briefly reviewed in the next section."
+                                      , ""
+                                      ]
+                                    , [ ""
+                                      , "1406.2192-v1-17-3"
+                                      , ""
+                                      , "Next we briefly review how this is done within a primal-dual framework."
+                                      , ""
+                                      ]
+                                    , [ ""
+                                      , "1406.2192-v1-19-0"
+                                      , ""
+                                      , "First notice that for any [MATH] and [MATH] that satisfy [EQUATION] we have [MATH] and [MATH] for all [MATH]."
+                                      , ""
                                       ]
                                     ]
                                 )

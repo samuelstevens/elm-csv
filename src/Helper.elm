@@ -6,7 +6,7 @@ type State
     | Field
     | CheckDoubleQuote
     | Escaped
-    | NonEscaped
+    | Standard
     | Invalid
 
 
@@ -40,19 +40,19 @@ nextState state remaining field row finished =
                         '"' ->
                             nextState Escaped rest "" row finished
 
-                        '\n' ->
-                            nextState Field rest "" [] finished
-
                         '\u{000D}' ->
-                            nextState Field rest "" [] finished
+                            nextState Field rest "" row finished
+
+                        '\n' ->
+                            nextState Field rest "" [] ((field :: row) :: finished)
 
                         _ ->
-                            nextState NonEscaped rest (String.fromChar ch) row finished
+                            nextState Standard rest (String.fromChar ch) row finished
 
                 Nothing ->
                     Ok finished
 
-        NonEscaped ->
+        Standard ->
             case String.uncons remaining of
                 Just ( ch, rest ) ->
                     case ch of
@@ -63,10 +63,10 @@ nextState state remaining field row finished =
                             nextState Field rest "" [] ((field :: row) :: finished)
 
                         '\u{000D}' ->
-                            nextState Field rest "" [] ((field :: row) :: finished)
+                            nextState Field rest field row finished
 
                         _ ->
-                            nextState NonEscaped rest (String.cons ch field) row finished
+                            nextState Standard rest (String.cons ch field) row finished
 
                 Nothing ->
                     Ok ((field :: row) :: finished)
@@ -85,7 +85,7 @@ nextState state remaining field row finished =
                             nextState Field rest "" [] ((field :: row) :: finished)
 
                         '\u{000D}' ->
-                            nextState Field rest "" [] ((field :: row) :: finished)
+                            nextState Field rest field row finished
 
                         _ ->
                             nextState Invalid rest "" (field :: row) finished
